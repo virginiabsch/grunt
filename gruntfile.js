@@ -4,21 +4,22 @@ module.exports = function(grunt) {
         less: {
             development: {
                 files: {
-                    'main.css': 'main.less'
+                    'dev/styles/main.css': 'src/styles/main.less'
+                }
+            },
+            production: {
+                options: {
+                    compress: true,
+                },
+                files: {
+                    'dist/styles/main.min.css': 'src/styles/main.less'
                 }
             }
         }
     })
 
-    grunt.registerTask('olaGrunt', function() {
-        const done = this.async();
-        setTimeout(function() {
-            console.log('Olá Grunt');
-            done();
-        }, 3000);
-    })
+    grunt.loadNpmTasks('grunt-contrib-less');
 
-    grunt.loadNpm('grunt-contrib-less');
-
-    grunt.registerTask('default', ['less']);
+    grunt.registerTask('default', ['less:development']);
+    grunt.registerTask('build', ['less:production']);
 }
