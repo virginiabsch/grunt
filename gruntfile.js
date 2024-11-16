@@ -20,6 +20,10 @@ module.exports = function(grunt) {
             less: {
                 files: ['src/styles/**/*.less'],
                 tasks: ['less:development']
+            },
+            html: {
+                files: ['src/index.html'],
+                tasks: ['replace:dev']
             }
         },
         replace: {
@@ -29,13 +33,17 @@ module.exports = function(grunt) {
                         {
                             match: 'ENDERECO_DO_CSS',
                             replacement: './styles/main.css'
+                        },
+                        {
+                            match: 'ENDERECO_DO_JS',
+                            replacement: '../src/scripts/main.js'
                         }
                     ]
                 },
                 files: [
                     {
                         expand: true,
-                        flattend: true,
+                        flatten: true,
                         src: ['src/index.html'],
                         dest: 'dev/'
                     }
@@ -47,13 +55,17 @@ module.exports = function(grunt) {
                         {
                             match: 'ENDERECO_DO_CSS',
                             replacement: './styles/main.min.css'
+                        },
+                        {
+                            match: 'ENDERECO_DO_JS',
+                            replacement: './scripts/main.min.js'
                         }
                     ]
                 },
                 files: [
                     {
                         expand: true,
-                        flattend: true,
+                        flatten: true,
                         src: ['prebuild/index.html'],
                         dest: 'dist/'
                     }
@@ -70,6 +82,14 @@ module.exports = function(grunt) {
                     'prebuild/index.html': 'src/index.html'
                 }
             }
+        },
+        clean: ['prebuild'],
+        uglify: {
+            target: {
+                files: {
+                    'dist/scripts/main.min.js': 'src/scripts/main.js'
+                }
+            }
         }
     })
 
@@ -77,7 +97,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-replace');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+
+
 
     grunt.registerTask('default', ['watch']);
-    grunt.registerTask('build', ['less:production', 'htmlmin:dist', 'replace:dist']);
+    grunt.registerTask('build', ['less:production', 'htmlmin:dist', 'replace:dist', 'clean', 'uglify']);
 }
